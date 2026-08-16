@@ -32,7 +32,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: UNA CHEATX
-        run: npm install
+        run: |
+          npm install
+          chmod +x ./node_modules/.bin/vite
 
       - name: Build
         working-directory: UNA CHEATX
