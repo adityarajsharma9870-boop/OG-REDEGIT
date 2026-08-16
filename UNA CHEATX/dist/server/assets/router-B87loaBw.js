@@ -11,7 +11,7 @@ import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import * as LabelPrimitive from "@radix-ui/react-label";
-const appCss = "/assets/styles-Cj_B29ze.css";
+const appCss = "/assets/styles-D1o4L56T.css";
 function reportLovableError(error, context = {}) {
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(
@@ -1254,7 +1254,7 @@ function ResetPasswordPage() {
     ] }) })
   ] }) });
 }
-const $$splitComponentImporter$4 = () => import("./login-CPSiNVfR.js");
+const $$splitComponentImporter$4 = () => import("./login-Dp-Minb3.js");
 const Route$5 = createFileRoute("/login")({
   head: () => ({
     meta: [{
@@ -1361,7 +1361,7 @@ function ForgotPasswordPage() {
     ] }) })
   ] }) });
 }
-const $$splitComponentImporter$3 = () => import("./dashboard-CWrNB86M.js");
+const $$splitComponentImporter$3 = () => import("./dashboard-kpNQgS5-.js");
 const Route$3 = createFileRoute("/dashboard")({
   head: () => ({
     meta: [{
@@ -1370,7 +1370,7 @@ const Route$3 = createFileRoute("/dashboard")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-const $$splitComponentImporter$2 = () => import("./admin-BRrirnl9.js");
+const $$splitComponentImporter$2 = () => import("./admin-DUvx14dt.js");
 const Route$2 = createFileRoute("/admin")({
   head: () => ({
     meta: [{
@@ -1379,7 +1379,7 @@ const Route$2 = createFileRoute("/admin")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-const $$splitComponentImporter$1 = () => import("./index-Ca5BH1rV.js");
+const $$splitComponentImporter$1 = () => import("./index-Cccfm8Pj.js");
 const Route$1 = createFileRoute("/")({
   head: () => ({
     meta: [{
@@ -1397,7 +1397,7 @@ const Route$1 = createFileRoute("/")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./auth.callback-BmmeB_pL.js");
+const $$splitComponentImporter = () => import("./auth.callback-xuw8qs3J.js");
 const Route = createFileRoute("/auth/callback")({
   head: () => ({
     meta: [{

@@ -1,4 +1,4 @@
-import { s as supabase } from "./router-uDuRmyto.js";
+import { s as supabase } from "./router-B87loaBw.js";
 const STORAGE_KEY = "una_products_local";
 function getLocalProducts() {
   if (typeof window === "undefined" || !window.localStorage) {

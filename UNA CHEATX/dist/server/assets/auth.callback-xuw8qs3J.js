@@ -2,7 +2,7 @@ import { jsx } from "react/jsx-runtime";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { L as LoadingScreen, s as supabase } from "./router-uDuRmyto.js";
+import { L as LoadingScreen, s as supabase } from "./router-B87loaBw.js";
 import "@tanstack/react-query";
 import "@supabase/supabase-js";
 import "@radix-ui/react-slot";

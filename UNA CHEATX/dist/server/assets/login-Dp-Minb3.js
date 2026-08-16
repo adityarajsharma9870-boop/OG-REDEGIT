@@ -2,7 +2,7 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { b as LogoMark } from "./router-uDuRmyto.js";
+import { b as LogoMark } from "./router-B87loaBw.js";
 import "@tanstack/react-query";
 import "@supabase/supabase-js";
 import "@radix-ui/react-slot";

@@ -1,5 +1,5 @@
 import { jsxs, jsx } from "react/jsx-runtime";
-import { u as useAuth, B as Button, C as Card, a as CardContent } from "./router-uDuRmyto.js";
+import { u as useAuth, B as Button, C as Card, a as CardContent } from "./router-B87loaBw.js";
 import { useNavigate } from "@tanstack/react-router";
 import "@tanstack/react-query";
 import "react";

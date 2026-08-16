@@ -5,8 +5,8 @@ import { useRef, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, X, MessageCircle, Shield, LogOut, Users, ChevronRight, Lock, Zap, Cpu, Check, ShoppingCart } from "lucide-react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { c as cn, d as useAuth, s as supabase, L as LoadingScreen, b as LogoMark } from "./router-uDuRmyto.js";
-import { D as DEFAULT_BRAND_SETTINGS, f as fetchProducts, l as loadBrandSettings, a as accentOf } from "./brand-D1Ku2tWZ.js";
+import { c as cn, d as useAuth, s as supabase, L as LoadingScreen, b as LogoMark } from "./router-B87loaBw.js";
+import { D as DEFAULT_BRAND_SETTINGS, f as fetchProducts, l as loadBrandSettings, a as accentOf } from "./brand-CF2eJztP.js";
 import "@supabase/supabase-js";
 import "sonner";
 import "@radix-ui/react-slot";
@@ -113,15 +113,14 @@ function BackgroundSpots() {
 }
 const DISCORD_URL = "https://discord.gg/NheAdhyT";
 function BuyModal({ product, onClose }) {
+  const [selectedTierIndex, setSelectedTierIndex] = useState(0);
+  const [scannerLoaded, setScannerLoaded] = useState(false);
   const hasScanner = !!product?.scanner_url;
   useEffect(() => {
-    if (!product) return;
-    if (!hasScanner) {
-      window.open(DISCORD_URL, "_blank");
-      onClose();
-    }
-  }, [product, hasScanner, onClose]);
+    setScannerLoaded(false);
+  }, [product?.id]);
   if (!product) return null;
+  const selectedTier = product.tiers?.[selectedTierIndex];
   return /* @__PURE__ */ jsx("div", { className: "fixed inset-0 z-[9000] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm", onClick: onClose, children: /* @__PURE__ */ jsxs("div", { className: "glass relative w-full max-w-md rounded-2xl p-6 animate-float-up", onClick: (e) => e.stopPropagation(), children: [
     /* @__PURE__ */ jsx("button", { onClick: onClose, className: "absolute right-4 top-4 text-muted-foreground hover:text-foreground", children: /* @__PURE__ */ jsx(X, { className: "h-5 w-5" }) }),
     /* @__PURE__ */ jsx("p", { className: "font-heading text-[11px] tracking-[0.3em] text-cyan", children: "COMPLETE PURCHASE" }),
@@ -130,9 +129,34 @@ function BuyModal({ product, onClose }) {
       product.name
     ] }),
     /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-muted-foreground", children: "Scan the QR below and message us on Discord to confirm." }),
+    product.tiers && product.tiers.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-4 flex flex-wrap gap-2", children: product.tiers.map((tier, index) => /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: () => setSelectedTierIndex(index),
+        className: `px-3 py-2 rounded-lg font-heading text-xs font-semibold tracking-wide transition-all ${selectedTierIndex === index ? "bg-cyan text-background" : "bg-muted text-foreground hover:bg-muted/80"}`,
+        children: tier.label
+      },
+      index
+    )) }),
+    selectedTier && /* @__PURE__ */ jsx("p", { className: "mt-3 font-heading text-xl font-bold text-cyan", children: selectedTier.price }),
     /* @__PURE__ */ jsxs("div", { className: "mt-5 rounded-2xl bg-white p-5 text-center text-black", children: [
       /* @__PURE__ */ jsx("p", { className: "mb-3 text-xs text-neutral-500", children: product.price }),
-      hasScanner ? /* @__PURE__ */ jsx("img", { src: product.scanner_url, alt: `${product.name} payment scanner`, className: "mx-auto h-80 w-80 object-contain" }) : /* @__PURE__ */ jsx("div", { className: "mx-auto grid h-56 w-56 place-items-center text-neutral-400", children: "No scanner available" }),
+      hasScanner ? /* @__PURE__ */ jsxs("div", { className: "relative mx-auto h-80 w-80 flex items-center justify-center bg-neutral-100 rounded-lg", children: [
+        !scannerLoaded && /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center rounded-lg", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
+          /* @__PURE__ */ jsx("div", { className: "animate-spin", children: /* @__PURE__ */ jsx("div", { className: "h-12 w-12 border-3 border-neutral-300 border-t-cyan rounded-full" }) }),
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-neutral-500 font-heading tracking-wider", children: "LOADING QR CODE..." })
+        ] }) }),
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: product.scanner_url,
+            alt: `${product.name} payment scanner`,
+            className: `h-80 w-80 object-contain transition-opacity duration-300 ${scannerLoaded ? "opacity-100" : "opacity-0"}`,
+            onLoad: () => setScannerLoaded(true),
+            onError: () => setScannerLoaded(true)
+          }
+        )
+      ] }) : /* @__PURE__ */ jsx("div", { className: "mx-auto grid h-56 w-56 place-items-center text-neutral-400", children: "No scanner available" }),
       /* @__PURE__ */ jsx("p", { className: "mt-3 text-[11px] text-neutral-400", children: "Message us once you complete the payment." })
     ] }),
     /* @__PURE__ */ jsxs("a", { href: DISCORD_URL, target: "_blank", rel: "noreferrer", className: "btn-animated mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-center font-heading text-sm font-semibold text-white", style: { background: "var(--gradient-brand)" }, children: [
@@ -315,7 +339,7 @@ function Index() {
             /* @__PURE__ */ jsx("span", { className: "font-heading tracking-wider text-muted-foreground", children: t.label }),
             /* @__PURE__ */ jsx("span", { className: "font-semibold", children: t.price })
           ] }, i)) }),
-          /* @__PURE__ */ jsxs("button", { onClick: () => p.scanner_url ? setBuying(p) : window.open("https://discord.gg/NheAdhyT", "_blank"), className: `buy-btn btn-animated mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-heading text-sm font-bold ${a.btn}`, children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => setBuying(p), className: `buy-btn btn-animated mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-heading text-sm font-bold ${a.btn}`, children: [
             /* @__PURE__ */ jsx(ShoppingCart, { className: "h-4 w-4" }),
             " BUY NOW →"
           ] })

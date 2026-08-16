@@ -73,7 +73,7 @@ function getResponse() {
 }
 var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 async function getStartManifest(matchedRoutes) {
-  const { tsrStartManifest } = await import("./_tanstack-start-manifest_v-BTmSd1CY.js");
+  const { tsrStartManifest } = await import("./_tanstack-start-manifest_v-C9_B_tER.js");
   const startManifest = tsrStartManifest();
   let routes = startManifest.routes;
   routes[rootRouteId];
@@ -95,19 +95,19 @@ async function getStartManifest(matchedRoutes) {
 const manifest = {
   "215f16a3e22d771b84486f221661bd7f828b61d801022f7cdd19659138e0f166": {
     functionName: "deleteProduct_createServerFn_handler",
-    importer: () => import("./product.functions-CxhwQXGj.js")
+    importer: () => import("./product.functions-BWU9lQOj.js")
   },
   "31346170704f8ba412fe0f8c5ba3a0194309320623f98c37727162827577c918": {
     functionName: "updateProduct_createServerFn_handler",
-    importer: () => import("./product.functions-CxhwQXGj.js")
+    importer: () => import("./product.functions-BWU9lQOj.js")
   },
   "44fd00a102131b500ed02f43bb7e9a42a6ee826507a0c18467e08f2fabd746ac": {
     functionName: "createProduct_createServerFn_handler",
-    importer: () => import("./product.functions-CxhwQXGj.js")
+    importer: () => import("./product.functions-BWU9lQOj.js")
   },
   "b3cb49f8aeff22e6afa32f8cd54a0000a6b65a2328f41b890e6c2ce7970b4be6": {
     functionName: "uploadScannerImage_createServerFn_handler",
-    importer: () => import("./scanner.functions-BDHzZZ_c.js")
+    importer: () => import("./scanner.functions-DzyeXiu5.js")
   }
 };
 async function getServerFnById(id, access) {
@@ -1338,8 +1338,8 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
   const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-    import("./router-uDuRmyto.js").then((n) => n.r),
-    import("./start-BNBLfsLX.js"),
+    import("./router-B87loaBw.js").then((n) => n.r),
+    import("./start-BQI4EEF1.js"),
     import("./empty-plugin-adapters-BFgPZ6_d.js")
   ]);
   return {
