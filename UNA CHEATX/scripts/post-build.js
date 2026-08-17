@@ -46,6 +46,62 @@ try {
     console.log('✓ Removed server directory');
   }
 
+  // Clean up old asset files (keep only the ones we'll reference)
+  if (fs.existsSync(assetsPath)) {
+    const files = fs.readdirSync(assetsPath);
+    console.log('Cleaning up old asset bundles...');
+
+    // Find the SMALLEST client-side bundle (exclude the SSR bundle which is 617KB)
+    const mainJsFiles = files.filter(f => f.startsWith('index-') && f.endsWith('.js'));
+    let mainJsFile = null;
+    let smallestSize = Infinity;
+    
+    mainJsFiles.forEach(file => {
+      const filePath = path.join(assetsPath, file);
+      const size = fs.statSync(filePath).size;
+      if (size < smallestSize) {
+        smallestSize = size;
+        mainJsFile = file;
+      }
+    });
+
+    console.log('Client bundles found:', mainJsFiles.map(f => {
+      const filePath = path.join(assetsPath, f);
+      const size = fs.statSync(filePath).size;
+      return `${f} (${(size / 1024).toFixed(1)}KB)`;
+    }));
+    console.log('Selected:', mainJsFile);
+
+    // Get the latest of each other type
+    const adminFiles = files.filter(f => f.startsWith('admin-') && f.endsWith('.js'));
+    const cssFiles = files.filter(f => f.endsWith('.css'));
+    const authFiles = files.filter(f => f.includes('auth.callback-') && f.endsWith('.js'));
+    const brandFiles = files.filter(f => f.startsWith('brand-') && f.endsWith('.js'));
+    const dashboardFiles = files.filter(f => f.startsWith('dashboard-') && f.endsWith('.js'));
+    const loginFiles = files.filter(f => f.startsWith('login-') && f.endsWith('.js'));
+    const otherFiles = files.filter(f => !['admin-', 'index-', 'auth.callback-', 'brand-', 'dashboard-', 'login-'].some(prefix => f.startsWith(prefix)) && !f.endsWith('.css') && f !== 'logo-mark-SLElYU2K.png');
+
+    // Build the keep set
+    const filesToKeep = new Set();
+    
+    if (mainJsFile) filesToKeep.add(mainJsFile);
+    [adminFiles, cssFiles, authFiles, brandFiles, dashboardFiles, loginFiles].forEach(group => {
+      if (group.length > 0) {
+        filesToKeep.add(group[group.length - 1]);
+      }
+    });
+    filesToKeep.add('logo-mark-SLElYU2K.png');
+    otherFiles.forEach(f => filesToKeep.add(f));
+
+    // Delete old files not in the keep list
+    files.forEach(file => {
+      if (!filesToKeep.has(file)) {
+        fs.unlinkSync(path.join(assetsPath, file));
+        console.log(`  ✗ Removed ${file}`);
+      }
+    });
+  }
+
   // Generate proper index.html with correct asset references
   if (fs.existsSync(assetsPath)) {
     const files = fs.readdirSync(assetsPath);
@@ -89,5 +145,6 @@ try {
   console.error('Post-build error:', error);
   process.exit(1);
 }
+
 
 
