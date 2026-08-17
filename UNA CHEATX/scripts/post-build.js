@@ -121,12 +121,14 @@ try {
         // CRITICAL: Remove self-referential imports (e.g., index-ABC.js importing from "./index-ABC.js")
         // These cause circular dependencies and break the app
         if (jsFile.startsWith('index-') && jsFile.endsWith('.js')) {
-          const selfRefRegex = new RegExp(`"\./${jsFile}"`, 'g');
+          // Match the complete import statement including 'from' keyword
+          // Pattern: import{...}from"./index-ABC.js"
+          const selfRefRegex = new RegExp(`import\\{[^}]*\\}from"\./${jsFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`, 'g');
           if (selfRefRegex.test(content)) {
-            // Self-referential imports must be removed - they indicate broken chunk splitting
+            // Remove the entire broken import statement - the bundler shouldn't have created it
             content = content.replace(selfRefRegex, '');
             modified = true;
-            console.log(`  ✓ Removed self-referential import in ${jsFile}`);
+            console.log(`  ✓ Removed broken self-referential import in ${jsFile}`);
           }
         }
         
