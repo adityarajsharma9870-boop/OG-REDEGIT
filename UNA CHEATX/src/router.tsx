@@ -8,6 +8,7 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: { queryClient },
+    basename: "/OG-REDEGIT/",
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
   });
