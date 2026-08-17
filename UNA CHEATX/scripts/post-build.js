@@ -93,6 +93,37 @@ try {
     filesToKeep.add('logo-mark-SLElYU2K.png');
     otherFiles.forEach(f => filesToKeep.add(f));
 
+    // Find all index files to be deleted and ones to keep
+    const deletedIndexFiles = mainJsFiles.filter(f => f !== mainJsFile);
+    
+    // Before deleting, replace import statements in kept chunks
+    if (deletedIndexFiles.length > 0 && mainJsFile) {
+      console.log('Updating import references in kept chunks...');
+      
+      // Get all JS files that will be kept (excluding index files we're deleting)
+      const keptJsFiles = Array.from(filesToKeep).filter(f => f.endsWith('.js') && !deletedIndexFiles.includes(f));
+      
+      keptJsFiles.forEach(jsFile => {
+        const jsPath = path.join(assetsPath, jsFile);
+        let content = fs.readFileSync(jsPath, 'utf8');
+        let modified = false;
+        
+        // Replace all deleted index file references with the kept one
+        deletedIndexFiles.forEach(deletedFile => {
+          const regex = new RegExp(`"\./${deletedFile}"`, 'g');
+          if (regex.test(content)) {
+            content = content.replace(regex, `"./${mainJsFile}"`);
+            modified = true;
+            console.log(`  ✓ Updated imports in ${jsFile} (${deletedFile} → ${mainJsFile})`);
+          }
+        });
+        
+        if (modified) {
+          fs.writeFileSync(jsPath, content, 'utf8');
+        }
+      });
+    }
+
     // Delete old files not in the keep list
     files.forEach(file => {
       if (!filesToKeep.has(file)) {
