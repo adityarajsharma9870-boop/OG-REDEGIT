@@ -25,12 +25,13 @@ const empty = {
 
 function AdminPage() {
   const { user, isAdmin: authIsAdmin, loading, signOut } = useAuth();
+  const hasFakeAdmin = typeof window !== "undefined" && Boolean(localStorage.getItem("fake_admin_session"));
   const isAdmin =
     authIsAdmin ||
+    hasFakeAdmin ||
     user?.email?.toLowerCase() === "adityasharma4518@gmail.com" ||
     user?.email?.toLowerCase() === "adityarajsharma9070@gmail.com" ||
-    user?.email?.toLowerCase() === "devadmine1234@gmail.com" ||
-    (typeof window !== "undefined" && Boolean(localStorage.getItem("fake_admin_session")));
+    user?.email?.toLowerCase() === "devadmine1234@gmail.com";
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [brandSettings, setBrandSettings] = useState<BrandSettings>(DEFAULT_BRAND_SETTINGS);
@@ -47,8 +48,10 @@ function AdminPage() {
   });
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [loading, user, navigate]);
+    if (!loading && !user && !hasFakeAdmin && !isAdmin) {
+      navigate({ to: "/login" });
+    }
+  }, [loading, user, hasFakeAdmin, isAdmin, navigate]);
 
   useEffect(() => {
     setBrandSettings(loadBrandSettings());

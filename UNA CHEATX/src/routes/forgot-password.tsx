@@ -1,7 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { toast } from 'sonner';
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -70,13 +67,14 @@ export function ForgotPasswordPage() {
               </p>
             </div>
 
-            <Button
-              type="button"
-              className="w-full bg-purple-600 hover:bg-purple-700"
-              onClick={() => navigate({ to: '/login' })}
-            >
-              Back to Login
-            </Button>
+            <Link to="/login" className="w-full block">
+              <Button
+                type="button"
+                className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
+              >
+                Back to Login
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -118,13 +116,12 @@ export function ForgotPasswordPage() {
 
             {/* Back to Login */}
             <p className="text-center text-sm text-gray-600">
-              <button
-                type="button"
-                onClick={() => navigate({ to: '/login' })}
-                className="text-purple-600 hover:text-purple-700 font-semibold"
+              <Link
+                to="/login"
+                className="text-purple-600 hover:text-purple-700 font-semibold cursor-pointer"
               >
                 Back to Login
-              </button>
+              </Link>
             </p>
           </form>
         </CardContent>

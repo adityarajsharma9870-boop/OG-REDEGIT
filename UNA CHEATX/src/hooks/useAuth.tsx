@@ -8,19 +8,52 @@ type AuthCtx = {
   isAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
+  loginAsAdmin: (email?: string) => void;
 };
 
 const Ctx = createContext<AuthCtx>({
-  user: null, session: null, isAdmin: false, loading: true, signOut: async () => {},
+  user: null,
+  session: null,
+  isAdmin: false,
+  loading: true,
+  signOut: async () => {},
+  loginAsAdmin: () => {},
 });
 
+function getInitialAdminSession(): Session | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem("fake_admin_session");
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (parsed?.email) {
+      return { user: { id: parsed.id || "fake-admin", email: parsed.email } } as any;
+    }
+  } catch {}
+  return null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const FAKE_ADMIN_EMAIL = "adityasharma4518@gmail.com";
   const FAKE_ADMIN_KEY = "fake_admin_session";
 
-  const [session, setSession] = useState<Session | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const initialAdmin = getInitialAdminSession();
+  const [session, setSession] = useState<Session | null>(initialAdmin);
+  const [isAdmin, setIsAdmin] = useState<boolean>(Boolean(initialAdmin));
+  const [loading, setLoading] = useState<boolean>(!initialAdmin);
+
+  const loginAsAdmin = (email?: string) => {
+    const cleanEmail = email?.trim().toLowerCase() || "adityarajsharma9070@gmail.com";
+    const fakeSession = { user: { id: "fake-admin", email: cleanEmail } } as any;
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(FAKE_ADMIN_KEY, JSON.stringify({ email: cleanEmail, id: "fake-admin" }));
+      } catch {}
+    }
+    setSession(fakeSession);
+    setIsAdmin(true);
+    setLoading(false);
+    window.dispatchEvent(new Event("fake_admin_login"));
+  };
 
   useEffect(() => {
     const loadFakeAdmin = () => {
@@ -38,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const fakeSession = { user: { id: parsed.id || "fake-admin", email: parsed.email } } as any;
         setSession(fakeSession);
         setIsAdmin(true);
+        setLoading(false);
         return true;
       } catch {
         localStorage.removeItem(FAKE_ADMIN_KEY);
@@ -56,7 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAdmin(true);
         return;
       }
-      if (!uid) { setIsAdmin(false); return; }
+      if (!uid) {
+        if (!loadFakeAdmin()) setIsAdmin(false);
+        return;
+      }
       const { data } = await supabase
         .from("user_roles").select("role").eq("user_id", uid).eq("role", "admin").maybeSingle();
       setIsAdmin(!!data || loadFakeAdmin());
@@ -67,8 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(s);
         checkAdmin(s.user?.id, s.user?.email);
       } else {
-        setSession(null);
-        if (!loadFakeAdmin()) setIsAdmin(false);
+        if (!loadFakeAdmin()) {
+          setSession(null);
+          setIsAdmin(false);
+        }
       }
     });
 
@@ -81,6 +120,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsAdmin(false);
       }
       setLoading(false);
+    }).catch(() => {
+      if (!loadFakeAdmin()) {
+        setLoading(false);
+      }
     });
 
     window.addEventListener("fake_admin_login", loadFakeAdmin);
@@ -97,11 +140,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setSession(null);
     setIsAdmin(false);
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {}
   };
 
   return (
-    <Ctx.Provider value={{ user: session?.user ?? null, session, isAdmin, loading, signOut }}>
+    <Ctx.Provider value={{ user: session?.user ?? null, session, isAdmin, loading, signOut, loginAsAdmin }}>
       {children}
     </Ctx.Provider>
   );

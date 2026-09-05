@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
@@ -217,13 +217,12 @@ export function SignupPage() {
             {/* Login Link */}
             <p className="text-center text-sm text-gray-600">
               Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => navigate({ to: '/login' })}
-                className="text-purple-600 hover:text-purple-700 font-semibold"
+              <Link
+                to="/login"
+                className="text-purple-600 hover:text-purple-700 font-semibold cursor-pointer"
               >
                 Log in
-              </button>
+              </Link>
             </p>
 
             {/* Google OAuth */}

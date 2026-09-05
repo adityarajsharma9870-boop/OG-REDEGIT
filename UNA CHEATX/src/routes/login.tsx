@@ -1,7 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { LogoMark } from "@/components/site/LogoMark";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/intergrations/supabase/client";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Login — OG REDEGIT" }] }),
@@ -10,31 +12,64 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { isAdmin, loginAsAdmin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const hasAdmin =
+      isAdmin ||
+      (typeof window !== "undefined" && Boolean(localStorage.getItem("fake_admin_session")));
+    if (hasAdmin) {
+      navigate({ to: "/admin" });
+    }
+  }, [isAdmin, navigate]);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
     setBusy(true);
 
-    const OWNER_PASSWORD = "aditya sharma owner of og redegit";
+    const cleanPass = password.trim().toLowerCase().replace(/\s+/g, " ");
+    const OWNER_PASSWORDS = [
+      "aditya sharma owner of og redegit",
+      "aditya sharma",
+      "og redegit",
+      "ogredegit",
+      "devadmine1234",
+      "adityarajsharma9070@gmail.com",
+      "adityasharma4518@gmail.com",
+    ];
 
-    setTimeout(() => {
+    const isOwner = OWNER_PASSWORDS.includes(cleanPass);
+    const cleanEmail = email.trim().toLowerCase() || "adityarajsharma9070@gmail.com";
+
+    if (isOwner) {
+      loginAsAdmin(cleanEmail);
+      toast.success("Welcome Back, OG REDEGIT Owner!");
       setBusy(false);
-      if (password.trim() === OWNER_PASSWORD) {
-        toast.success("Welcome Back, OG REDEGIT Owner!");
-        const cleanEmail = email.trim().toLowerCase() || "adityarajsharma9070@gmail.com";
-        localStorage.setItem(
-          "fake_admin_session",
-          JSON.stringify({ email: cleanEmail, id: "fake-admin" })
-        );
-        window.dispatchEvent(new Event("fake_admin_login"));
+      navigate({ to: "/admin" });
+      return;
+    }
+
+    // Attempt Supabase login as fallback
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: password.trim(),
+      });
+
+      if (!error && data.user) {
+        toast.success("Logged in successfully!");
+        setBusy(false);
         navigate({ to: "/admin" });
-      } else {
-        toast.error("Invalid credentials. Use the owner password.");
+        return;
       }
-    }, 200);
+    } catch {}
+
+    setBusy(false);
+    toast.error("Invalid credentials. Please enter the owner password.");
   };
 
   return (
@@ -48,12 +83,11 @@ function LoginPage() {
 
         <form onSubmit={submit} className="mt-8 space-y-4">
           <input
-            type="email"
-            name="email"
-            id="email"
-            autoComplete="email"
-            required
-            placeholder="Email"
+            type="text"
+            name="username_or_email"
+            id="username_or_email"
+            autoComplete="username"
+            placeholder="Email or Username (optional)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
@@ -64,7 +98,7 @@ function LoginPage() {
             id="password"
             autoComplete="current-password"
             required
-            placeholder="Password"
+            placeholder="Owner Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
@@ -75,18 +109,17 @@ function LoginPage() {
             className="w-full rounded-xl py-3 font-heading text-sm font-bold text-white transition-opacity duration-150 hover:opacity-95 active:scale-[0.99] cursor-pointer disabled:opacity-60"
             style={{ background: "var(--gradient-brand)" }}
           >
-            {busy ? "Checking…" : "OPEN ADMIN PANEL"}
+            {busy ? "Signing in…" : "OPEN ADMIN PANEL"}
           </button>
         </form>
 
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/" })}
+        <Link
+          to="/"
           aria-label="Back to home"
           className="mx-auto mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-lg text-muted-foreground transition-colors hover:bg-secondary/70 cursor-pointer"
         >
           ←
-        </button>
+        </Link>
       </div>
     </div>
   );

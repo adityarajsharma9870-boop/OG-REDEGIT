@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
@@ -105,13 +105,14 @@ export function VerifyEmailPage() {
                 </p>
               </div>
 
-              <Button
-                type="button"
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => navigate({ to: '/login' })}
-              >
-                Go to Login
-              </Button>
+              <Link to="/login" className="w-full block">
+                <Button
+                  type="button"
+                  className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
+                >
+                  Go to Login
+                </Button>
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">
@@ -129,13 +130,14 @@ export function VerifyEmailPage() {
                 </div>
               </div>
 
-              <Button
-                type="button"
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => navigate({ to: '/login' })}
-              >
-                Back to Login
-              </Button>
+              <Link to="/login" className="w-full block">
+                <Button
+                  type="button"
+                  className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
+                >
+                  Back to Login
+                </Button>
+              </Link>
             </div>
           )}
         </CardContent>

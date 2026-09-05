@@ -34,7 +34,7 @@ const FEATURE_ICONS = {
 
 
 function Index() {
-  const { user, isAdmin: authIsAdmin, loading } = useAuth();
+  const { user, isAdmin: authIsAdmin, loading, signOut } = useAuth();
   const isAdmin = authIsAdmin || user?.email?.toLowerCase() === "adityasharma4518@gmail.com" || user?.email?.toLowerCase() === "devadmine1234@gmail.com";
   const [brandSettings, setBrandSettings] = useState<BrandSettings>(DEFAULT_BRAND_SETTINGS);
   const [buying, setBuying] = useState<Product | null>(null);
@@ -104,7 +104,7 @@ function Index() {
               </Link>
             )}
             {user ? (
-              <button onClick={() => supabase.auth.signOut()} className="btn-animated flex items-center gap-2 rounded-lg px-4 py-2 font-heading text-xs font-semibold tracking-widest text-white" style={{ background: "var(--gradient-brand)" }}>
+              <button onClick={signOut} className="btn-animated flex items-center gap-2 rounded-lg px-4 py-2 font-heading text-xs font-semibold tracking-widest text-white cursor-pointer" style={{ background: "var(--gradient-brand)" }}>
                 <LogOut className="h-3.5 w-3.5" /> SIGN OUT
               </button>
             ) : (

@@ -14,7 +14,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider as SupabaseAuthProvider } from "@/hooks/useAuth";
 import { AuthProvider as JwtAuthProvider } from "@/context/AuthContext";
 import { CursorGlow } from "@/components/site/CursorGlow";
-import { LoadingScreen } from "@/components/site/LoadingScreen";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -126,7 +125,6 @@ function RootComponent() {
       <SupabaseAuthProvider>
         <JwtAuthProvider>
           <CursorGlow />
-          <LoadingScreen />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
           <Toaster position="top-center" theme="dark" richColors />

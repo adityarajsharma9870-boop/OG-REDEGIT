@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState } from 'react';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
@@ -124,13 +124,14 @@ export function ResetPasswordPage() {
                 You can now log in with your new password.
               </p>
 
-              <Button
-                type="button"
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => navigate({ to: '/login' })}
-              >
-                Go to Login
-              </Button>
+              <Link to="/login" className="w-full block">
+                <Button
+                  type="button"
+                  className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
+                >
+                  Go to Login
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -150,13 +151,14 @@ export function ResetPasswordPage() {
             <p className="text-sm text-gray-600 mb-4">
               The password reset link is invalid or has expired. Please request a new one.
             </p>
-            <Button
-              type="button"
-              className="w-full bg-purple-600 hover:bg-purple-700"
-              onClick={() => navigate({ to: '/forgot-password' })}
-            >
-              Request New Link
-            </Button>
+            <Link to="/forgot-password" className="w-full block">
+              <Button
+                type="button"
+                className="w-full bg-purple-600 hover:bg-purple-700 cursor-pointer"
+              >
+                Request New Link
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -228,13 +230,12 @@ export function ResetPasswordPage() {
 
             {/* Back to Login */}
             <p className="text-center text-sm text-gray-600">
-              <button
-                type="button"
-                onClick={() => navigate({ to: '/login' })}
-                className="text-purple-600 hover:text-purple-700 font-semibold"
+              <Link
+                to="/login"
+                className="text-purple-600 hover:text-purple-700 font-semibold cursor-pointer"
               >
                 Back to Login
-              </button>
+              </Link>
             </p>
           </form>
         </CardContent>

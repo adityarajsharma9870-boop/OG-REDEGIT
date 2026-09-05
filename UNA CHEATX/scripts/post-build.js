@@ -52,6 +52,9 @@ try {
 
   // 2. Move client files to dist root
   if (fs.existsSync(clientPath)) {
+    if (fs.existsSync(assetsPath)) {
+      fs.rmSync(assetsPath, { recursive: true, force: true });
+    }
     copyDirRecursive(clientPath, distPath);
     fs.rmSync(clientPath, { recursive: true, force: true });
     console.log('✓ Moved client files to dist root');

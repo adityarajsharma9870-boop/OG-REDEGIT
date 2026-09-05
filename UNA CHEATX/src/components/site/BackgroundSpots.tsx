@@ -17,6 +17,23 @@ export function BackgroundSpots() {
     const el = container.current;
     if (!el) return;
 
+    let spotCenters: { x: number; y: number }[] = [];
+
+    const updateCenters = () => {
+      const rect = el.getBoundingClientRect();
+      spotCenters = refs.current.map((r) => {
+        if (!r) return { x: 0, y: 0 };
+        const rr = r.getBoundingClientRect();
+        return {
+          x: rr.left + rr.width / 2 - rect.left,
+          y: rr.top + rr.height / 2 - rect.top,
+        };
+      });
+    };
+
+    updateCenters();
+    window.addEventListener("resize", updateCenters, { passive: true });
+
     let ticking = false;
 
     const onMove = (e: MouseEvent) => {
@@ -31,11 +48,10 @@ export function BackgroundSpots() {
 
         refs.current.forEach((r, idx) => {
           if (!r) return;
-          const rr = r.getBoundingClientRect();
-          const rx = rr.left + rr.width / 2 - rect.left;
-          const ry = rr.top + rr.height / 2 - rect.top;
-          const dx = cx - rx;
-          const dy = cy - ry;
+          const center = spotCenters[idx];
+          if (!center) return;
+          const dx = cx - center.x;
+          const dy = cy - center.y;
           const d = Math.sqrt(dx * dx + dy * dy);
           const max = 220;
           const proximity = Math.max(0, 1 - d / max);
@@ -61,6 +77,7 @@ export function BackgroundSpots() {
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("mouseleave", onLeave, { passive: true });
     return () => {
+      window.removeEventListener("resize", updateCenters);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseleave", onLeave);
     };
