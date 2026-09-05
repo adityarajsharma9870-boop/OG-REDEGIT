@@ -3,3 +3,6 @@ dist/
 *.log
 solution.md
 test-deployed.js
+
+.vercel
+.env*
