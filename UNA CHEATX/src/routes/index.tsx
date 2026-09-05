@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Shield, Zap, Check, ChevronRight, MessageCircle, Users, ShoppingCart, Cpu, Lock } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { LogoMark } from "@/components/site/LogoMark";
@@ -39,7 +39,20 @@ function Index() {
   const [brandSettings, setBrandSettings] = useState<BrandSettings>(DEFAULT_BRAND_SETTINGS);
   const [buying, setBuying] = useState<Product | null>(null);
   const [visits, setVisits] = useState<number | null>(null);
+  const qc = useQueryClient();
   const { data: products = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
+
+  useEffect(() => {
+    const ch = supabase
+      .channel("products-public")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => {
+        qc.invalidateQueries({ queryKey: ["products"] });
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [qc]);
 
   const handleFaqPointerMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();

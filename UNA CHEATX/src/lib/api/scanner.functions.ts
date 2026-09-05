@@ -1,30 +1,59 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+import { supabase } from "@/intergrations/supabase/client";
 
-export const uploadScannerImage = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      fileName: z.string().min(1),
-      contentType: z.string().min(1),
-      base64: z.string().min(1),
-    }),
-  )
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/intergrations/supabase/client.server");
-    const { randomUUID } = await import("crypto");
-    const fileBuffer = Buffer.from(data.base64, "base64");
-    const ext = data.fileName.split(".").pop() || "png";
-    const path = `${randomUUID()}.${ext}`;
+/**
+ * Direct client-side upload of payment scanner / QR images to Supabase Storage.
+ * Stores files in the public "scanners" bucket and returns the public CDN URL.
+ */
+export async function uploadScannerImage(
+  input:
+    | File
+    | { file: File }
+    | { data: { fileName: string; contentType: string; base64: string } }
+) {
+  let fileBody: File | Blob;
+  let originalName: string;
+  let contentType: string;
 
-    const { error } = await supabaseAdmin.storage.from("scanners").upload(path, fileBuffer, {
-      contentType: data.contentType,
+  if (input instanceof File) {
+    fileBody = input;
+    originalName = input.name;
+    contentType = input.type || "image/png";
+  } else if ("file" in input) {
+    fileBody = input.file;
+    originalName = input.file.name;
+    contentType = input.file.type || "image/png";
+  } else {
+    const { data } = input;
+    originalName = data.fileName;
+    contentType = data.contentType || "image/png";
+
+    // Decode base64 to binary Blob
+    const binary = atob(data.base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    fileBody = new Blob([bytes], { type: contentType });
+  }
+
+  const ext = originalName.split(".").pop() || "png";
+  const uniqueName = `scanner_${Date.now()}_${Math.random().toString(36).slice(2, 9)}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("scanners")
+    .upload(uniqueName, fileBody, {
+      contentType,
       upsert: true,
     });
 
-    if (error) {
-      throw new Error(error.message || "Failed to upload scanner image.");
-    }
+  if (uploadError) {
+    console.error("[Scanner] Storage upload error:", uploadError);
+    throw new Error(`Failed to upload scanner image: ${uploadError.message}`);
+  }
 
-    const { data: result } = supabaseAdmin.storage.from("scanners").getPublicUrl(path);
-    return { publicUrl: result.publicUrl };
-  });
+  const { data: publicUrlData } = supabase.storage
+    .from("scanners")
+    .getPublicUrl(uniqueName);
+
+  return { publicUrl: publicUrlData.publicUrl };
+}

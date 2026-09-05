@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { fetchProducts, ACCENTS, accentOf, type Product } from "@/lib/products";
 import { uploadScannerImage } from "@/lib/api/scanner.functions";
 import { createProduct, updateProduct, deleteProduct } from "@/lib/api/product.functions";
-import { createLocalProduct, updateLocalProduct, deleteLocalProduct, getLocalProducts } from "@/lib/api/product-local";
 import { LogoMark } from "@/components/site/LogoMark";
 import { BrandSettings, DEFAULT_BRAND_SETTINGS, loadBrandSettings, saveBrandSettings } from "@/lib/brand";
 
@@ -59,7 +58,9 @@ function AdminPage() {
 
   useEffect(() => {
     const ch = supabase.channel("products-admin")
-      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => qc.invalidateQueries({ queryKey: ["products"] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, () => {
+        qc.invalidateQueries({ queryKey: ["products"] });
+      })
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, [qc]);
@@ -97,29 +98,11 @@ function AdminPage() {
 
     try {
       if (editingId) {
-        // Try Supabase first, then fall back to local storage
-        try {
-          await updateProduct({ data: { id: editingId, payload } });
-          toast.success("Product updated permanently!");
-        } catch (supabaseError) {
-          console.warn('[Admin] Supabase update failed, using local storage:', supabaseError);
-          const updated = updateLocalProduct(editingId, payload);
-          if (updated) {
-            toast.success("Product updated (local cache - sync pending)");
-          } else {
-            throw new Error("Product not found");
-          }
-        }
+        await updateProduct({ id: editingId, payload });
+        toast.success("Product updated universally in cloud database!");
       } else {
-        // Try Supabase first, then fall back to local storage
-        try {
-          await createProduct({ data: payload });
-          toast.success("Product saved permanently!");
-        } catch (supabaseError) {
-          console.warn('[Admin] Supabase create failed, using local storage:', supabaseError);
-          createLocalProduct(payload);
-          toast.success("Product saved (local cache - sync pending)");
-        }
+        await createProduct(payload);
+        toast.success("Product saved universally in cloud database!");
       }
       setForm(empty);
       setEditingId(null);
@@ -151,32 +134,10 @@ function AdminPage() {
     if (!file.type.startsWith("image/")) { toast.error("Please choose an image file."); return; }
     setUploading(true);
 
-    const base64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result;
-        if (typeof result === "string") {
-          const commaIndex = result.indexOf(",");
-          resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
-        } else {
-          reject(new Error("Unable to read file."));
-        }
-      };
-      reader.onerror = () => reject(new Error("Unable to read file."));
-      reader.readAsDataURL(file);
-    });
-
     try {
-      try {
-        const response = await uploadScannerImage({ data: { fileName: file.name, contentType: file.type, base64 } });
-        setForm((f) => ({ ...f, scanner_url: response.publicUrl }));
-        toast.success("Scanner image uploaded.");
-      } catch (serverError) {
-        console.warn("[Admin] Scanner upload failed, using local data URL fallback:", serverError);
-        const localUrl = `data:${file.type};base64,${base64}`;
-        setForm((f) => ({ ...f, scanner_url: localUrl }));
-        toast.success("Scanner image saved locally - sync pending");
-      }
+      const response = await uploadScannerImage(file);
+      setForm((f) => ({ ...f, scanner_url: response.publicUrl }));
+      toast.success("Scanner image uploaded to cloud storage!");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Upload failed.";
       toast.error(message);
@@ -186,21 +147,10 @@ function AdminPage() {
   };
 
   const del = async (p: Product) => {
-    if (!confirm(`Delete "${p.name}" permanently?`)) return;
+    if (!confirm(`Delete "${p.name}" permanently across all devices?`)) return;
     try {
-      // Try Supabase first, then fall back to local storage
-      try {
-        await deleteProduct({ data: { id: p.id } });
-        toast.success("Deleted permanently.");
-      } catch (supabaseError) {
-        console.warn('[Admin] Supabase delete failed, using local storage:', supabaseError);
-        const deleted = deleteLocalProduct(p.id);
-        if (deleted) {
-          toast.success("Deleted (local cache - sync pending)");
-        } else {
-          throw new Error("Product not found");
-        }
-      }
+      await deleteProduct({ id: p.id });
+      toast.success("Product deleted universally!");
       if (editingId === p.id) cancelEdit();
       qc.invalidateQueries({ queryKey: ["products"] });
     } catch (error: unknown) {
@@ -535,16 +485,34 @@ function AdminPage() {
           <Field l="PRICING TIERS (LABEL = PRICE, ONE PER LINE)"><textarea rows={4} className={inp} value={form.tiers} onChange={(e) => setForm({ ...form, tiers: e.target.value })} /></Field>
           <Field l="SORT ORDER"><input type="number" className={inp} value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} /></Field>
           <div className="md:col-span-2">
-            <Field l="PAYMENT SCANNER (QR PHOTO) — IF EMPTY, BUY BUTTON OPENS DISCORD">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <input type="file" accept="image/*" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadScanner(f); }} className={`${inp} cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1 file:text-foreground`} />
-                {uploading && <span className="text-xs text-muted-foreground">Uploading…</span>}
-                {form.scanner_url && (
-                  <div className="flex items-center gap-2">
-                    <img src={form.scanner_url} alt="Scanner preview" className="h-16 w-16 rounded-md border border-border object-cover" />
-                    <button type="button" onClick={() => setForm({ ...form, scanner_url: "" })} className="rounded-lg p-2 text-destructive hover:bg-destructive/10"><X className="h-4 w-4" /></button>
-                  </div>
-                )}
+            <Field l="PAYMENT SCANNER (QR PHOTO) — UPLOAD FILE OR PASTE IMAGE URL (IF EMPTY, BUY OPENS DISCORD)">
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  className={inp}
+                  value={form.scanner_url}
+                  onChange={(e) => setForm({ ...form, scanner_url: e.target.value })}
+                  placeholder="Paste direct Image/QR URL (https://...) or upload an image below"
+                />
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) uploadScanner(f);
+                    }}
+                    className={`${inp} cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1 file:text-foreground`}
+                  />
+                  {uploading && <span className="text-xs text-muted-foreground animate-pulse">Uploading to cloud storage…</span>}
+                  {form.scanner_url && (
+                    <div className="flex items-center gap-2">
+                      <img src={form.scanner_url} alt="Scanner preview" className="h-16 w-16 rounded-md border border-border object-cover" />
+                      <button type="button" onClick={() => setForm({ ...form, scanner_url: "" })} className="rounded-lg p-2 text-destructive hover:bg-destructive/10"><X className="h-4 w-4" /></button>
+                    </div>
+                  )}
+                </div>
               </div>
             </Field>
           </div>
