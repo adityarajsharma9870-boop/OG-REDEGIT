@@ -292,10 +292,7 @@
  100% { background-position: 0 0, 0 0; }
 }
 
-/* Custom cursor */
-@media (pointer: fine) {
-  .cursor-host, .cursor-host * { cursor: none; }
-}
+/* Native cursor remains visible and smooth everywhere */
 
 /* Product card hover effect (accent glow + lift) */
 .product-card {

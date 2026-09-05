@@ -17,43 +17,52 @@ export function BackgroundSpots() {
     const el = container.current;
     if (!el) return;
 
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const cx = e.clientX - rect.left;
-      const cy = e.clientY - rect.top;
+    let ticking = false;
 
-      refs.current.forEach((r) => {
-        if (!r) return;
-        const rr = r.getBoundingClientRect();
-        const rx = rr.left + rr.width / 2 - rect.left;
-        const ry = rr.top + rr.height / 2 - rect.top;
-        const dx = cx - rx;
-        const dy = cy - ry;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        const max = 220;
-        const proximity = Math.max(0, 1 - d / max);
-        const scale = 1 + proximity * 0.65;
-        const opacity = 0.25 + proximity * 0.9;
-        r.style.transform = `translate3d(0,0,0) scale(${scale})`;
-        r.style.opacity = String(opacity);
-        r.style.filter = `drop-shadow(0 0 ${6 + proximity * 18}px ${getComputedStyle(r).getPropertyValue('--spot-color') || 'rgba(255,0,255,0.7)'} )`;
+    const onMove = (e: MouseEvent) => {
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        ticking = false;
+        const rect = el.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+
+        refs.current.forEach((r, idx) => {
+          if (!r) return;
+          const rr = r.getBoundingClientRect();
+          const rx = rr.left + rr.width / 2 - rect.left;
+          const ry = rr.top + rr.height / 2 - rect.top;
+          const dx = cx - rx;
+          const dy = cy - ry;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          const max = 220;
+          const proximity = Math.max(0, 1 - d / max);
+          const scale = 1 + proximity * 0.65;
+          const opacity = 0.25 + proximity * 0.9;
+          r.style.transform = `translate3d(0,0,0) scale(${scale})`;
+          r.style.opacity = String(opacity);
+          const spotColor = SPOTS[idx]?.color || "rgba(255,0,255,0.7)";
+          r.style.filter = proximity > 0 ? `drop-shadow(0 0 ${6 + proximity * 18}px ${spotColor})` : "";
+        });
       });
     };
 
     const onLeave = () => {
       refs.current.forEach((r) => {
         if (!r) return;
-        r.style.transform = "scale(1)";
+        r.style.transform = "translate3d(0,0,0) scale(1)";
         r.style.opacity = "0.25";
         r.style.filter = "";
       });
     };
 
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseleave", onLeave);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseleave", onLeave, { passive: true });
     return () => {
-      el.removeEventListener("mousemove", onMove);
-      el.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseleave", onLeave);
     };
   }, []);
 

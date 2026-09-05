@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       try {
         const parsed = JSON.parse(stored);
-        if (parsed?.email?.toLowerCase() !== FAKE_ADMIN_EMAIL) {
+        if (!parsed?.email) {
           localStorage.removeItem(FAKE_ADMIN_KEY);
           return false;
         }
@@ -46,14 +46,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const checkAdmin = async (uid: string | undefined, email?: string | null) => {
-      if (email?.toLowerCase() === FAKE_ADMIN_EMAIL) {
+      const lower = email?.toLowerCase();
+      if (
+        lower === "adityasharma4518@gmail.com" ||
+        lower === "adityarajsharma9070@gmail.com" ||
+        lower === "devadmine1234@gmail.com" ||
+        loadFakeAdmin()
+      ) {
         setIsAdmin(true);
         return;
       }
       if (!uid) { setIsAdmin(false); return; }
       const { data } = await supabase
         .from("user_roles").select("role").eq("user_id", uid).eq("role", "admin").maybeSingle();
-      setIsAdmin(!!data);
+      setIsAdmin(!!data || loadFakeAdmin());
     };
 
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {

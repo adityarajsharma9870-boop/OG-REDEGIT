@@ -5,7 +5,6 @@ import { Shield, Zap, Check, ChevronRight, MessageCircle, Users, ShoppingCart, C
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { LogoMark } from "@/components/site/LogoMark";
 import BackgroundSpots from "@/components/site/BackgroundSpots";
-import { LoadingScreen } from "@/components/site/LoadingScreen";
 import { BuyModal } from "@/components/site/BuyModal";
 import { fetchProducts, accentOf, type Product } from "@/lib/products";
 import { loadBrandSettings, type BrandSettings, DEFAULT_BRAND_SETTINGS } from "@/lib/brand";
@@ -81,7 +80,6 @@ function Index() {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <BackgroundSpots />
-      <LoadingScreen />
 
       {/* Nav */}
       <header className="sticky top-0 z-50 glass">

@@ -22,15 +22,19 @@ function LoginPage() {
 
     setTimeout(() => {
       setBusy(false);
-      if (password === OWNER_PASSWORD) {
+      if (password.trim() === OWNER_PASSWORD) {
         toast.success("Welcome Back, OG REDEGIT Owner!");
-        localStorage.setItem("fake_admin_session", JSON.stringify({ email: email.trim().toLowerCase() || "unknown@ogredegit.local", id: "fake-admin" }));
+        const cleanEmail = email.trim().toLowerCase() || "adityarajsharma9070@gmail.com";
+        localStorage.setItem(
+          "fake_admin_session",
+          JSON.stringify({ email: cleanEmail, id: "fake-admin" })
+        );
         window.dispatchEvent(new Event("fake_admin_login"));
         navigate({ to: "/admin" });
       } else {
         toast.error("Invalid credentials. Use the owner password.");
       }
-    }, 500);
+    }, 200);
   };
 
   return (
@@ -45,24 +49,30 @@ function LoginPage() {
         <form onSubmit={submit} className="mt-8 space-y-4">
           <input
             type="email"
+            name="email"
+            id="email"
+            autoComplete="email"
             required
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
           />
           <input
             type="password"
+            name="password"
+            id="password"
+            autoComplete="current-password"
             required
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
           />
           <button
             type="submit"
             disabled={busy}
-            className="w-full rounded-xl py-3 font-heading text-sm font-bold text-white disabled:opacity-60"
+            className="w-full rounded-xl py-3 font-heading text-sm font-bold text-white transition-opacity duration-150 hover:opacity-95 active:scale-[0.99] cursor-pointer disabled:opacity-60"
             style={{ background: "var(--gradient-brand)" }}
           >
             {busy ? "Checking…" : "OPEN ADMIN PANEL"}
@@ -73,7 +83,7 @@ function LoginPage() {
           type="button"
           onClick={() => navigate({ to: "/" })}
           aria-label="Back to home"
-          className="mx-auto mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-lg text-muted-foreground hover:bg-secondary/70"
+          className="mx-auto mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-lg text-muted-foreground transition-colors hover:bg-secondary/70 cursor-pointer"
         >
           ←
         </button>
