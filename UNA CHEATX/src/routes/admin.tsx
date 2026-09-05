@@ -84,6 +84,7 @@ function AdminPage() {
       notes: form.notes.split("\n").map((x) => x.trim()).filter(Boolean),
       tiers: parseTiers(form.tiers), sort_order: Number(form.sort_order) || 99,
       scanner_url: form.scanner_url,
+      image_url: "",
     };
 
     try {
@@ -181,7 +182,7 @@ function AdminPage() {
     try {
       // Try Supabase first, then fall back to local storage
       try {
-        await deleteProduct({ id: p.id });
+        await deleteProduct({ data: { id: p.id } });
         toast.success("Deleted permanently.");
       } catch (supabaseError) {
         console.warn('[Admin] Supabase delete failed, using local storage:', supabaseError);

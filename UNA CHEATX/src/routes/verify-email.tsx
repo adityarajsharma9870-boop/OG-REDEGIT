@@ -1,13 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const Route = createFileRoute("/verify-email")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    token: typeof search.token === 'string' ? search.token : '',
+  }),
   head: () => ({ meta: [{ title: "Verify Email — OG REDEGIT" }] }),
   component: VerifyEmailPage,
 });
@@ -22,7 +24,7 @@ export function VerifyEmailPage() {
   const token = search?.token || '';
   const [loading, setLoading] = useState(true);
   const [verified, setVerified] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   /**
    * Verify email on page load

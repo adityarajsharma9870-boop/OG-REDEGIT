@@ -1,13 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const Route = createFileRoute("/verify-email-sent")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    email: typeof search.email === 'string' ? search.email : '',
+  }),
   head: () => ({ meta: [{ title: "Verify Email Sent — OG REDEGIT" }] }),
   component: VerifyEmailSentPage,
 });

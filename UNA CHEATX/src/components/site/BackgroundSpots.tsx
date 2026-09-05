@@ -62,7 +62,9 @@ export function BackgroundSpots() {
       {SPOTS.map((s, i) => (
         <div
           key={i}
-          ref={(el) => (refs.current[i] = el!)}
+          ref={(el) => {
+            refs.current[i] = el!;
+          }}
           className="bg-spot"
           style={{
             left: s.left,

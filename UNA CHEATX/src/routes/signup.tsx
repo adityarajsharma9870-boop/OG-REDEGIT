@@ -1,7 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -48,7 +47,7 @@ export function SignupPage() {
   /**
    * Check password strength
    */
-  const checkPasswordStrength = (password) => {
+  const checkPasswordStrength = (password: string) => {
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[A-Z]/.test(password)) strength++;
@@ -61,7 +60,7 @@ export function SignupPage() {
   /**
    * Handle form submit
    */
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validation

@@ -1,7 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { toast } from 'sonner';
 import { useState } from 'react';
-import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useAuth as useJWTAuth } from '../hooks/useAuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -9,6 +8,9 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 
 export const Route = createFileRoute("/reset-password")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    token: typeof search.token === 'string' ? search.token : '',
+  }),
   head: () => ({ meta: [{ title: "Reset Password — OG REDEGIT" }] }),
   component: ResetPasswordPage,
 });
@@ -46,7 +48,7 @@ export function ResetPasswordPage() {
   /**
    * Check password strength
    */
-  const checkPasswordStrength = (password) => {
+  const checkPasswordStrength = (password: string) => {
     let strength = 0;
     if (password.length >= 8) strength++;
     if (/[A-Z]/.test(password)) strength++;
@@ -59,7 +61,7 @@ export function ResetPasswordPage() {
   /**
    * Handle form submit
    */
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!token) {
