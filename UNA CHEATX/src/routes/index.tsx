@@ -263,7 +263,7 @@ function Index() {
       </section>
 
       <footer className="border-t border-border py-8 text-center font-heading text-xs tracking-widest text-muted-foreground">
-        © {new Date().getFullYear()} UNA CHEATX · ALL RIGHTS RESERVED
+        © {new Date().getFullYear()} OG REDEGIT · ALL RIGHTS RESERVED
       </footer>
 
       <BuyModal product={buying} onClose={() => setBuying(null)} />

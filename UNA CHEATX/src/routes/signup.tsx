@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Signup — UNA CHEATX" }] }),
+  head: () => ({ meta: [{ title: "Signup — OG REDEGIT" }] }),
   component: SignupPage,
 });
 
@@ -119,7 +119,7 @@ export function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">
           <CardTitle className="text-2xl">Create Account</CardTitle>
-          <CardDescription>Sign up to get started with UNA CHEATX</CardDescription>
+          <CardDescription>Sign up to get started with OG REDEGIT</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

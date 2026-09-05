@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 
 export const Route = createFileRoute("/reset-password")({
-  head: () => ({ meta: [{ title: "Reset Password — UNA CHEATX" }] }),
+  head: () => ({ meta: [{ title: "Reset Password — OG REDEGIT" }] }),
   component: ResetPasswordPage,
 });
 

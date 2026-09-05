@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 export const Route = createFileRoute("/verify-email")({
-  head: () => ({ meta: [{ title: "Verify Email — UNA CHEATX" }] }),
+  head: () => ({ meta: [{ title: "Verify Email — OG REDEGIT" }] }),
   component: VerifyEmailPage,
 });
 
@@ -93,7 +93,7 @@ export function VerifyEmailPage() {
             <div className="space-y-4">
               <p className="text-sm text-gray-600">
                 Your email has been verified successfully. You can now log in and start using all
-                features of UNA CHEATX.
+                features of OG REDEGIT.
               </p>
 
               <div className="flex gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">

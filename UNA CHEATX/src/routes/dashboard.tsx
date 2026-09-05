@@ -19,7 +19,7 @@ function DashboardPage() {
       <nav className="bg-black/20 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-white">UNA CHEATX</h1>
+            <h1 className="text-2xl font-bold text-white">OG REDEGIT</h1>
             <p className="text-sm text-gray-300">Dashboard</p>
           </div>
           <div className="flex items-center gap-4">
@@ -130,6 +130,6 @@ function DashboardPage() {
 }
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard – UNA CHEATX" }] }),
+  head: () => ({ meta: [{ title: "Dashboard – OG REDEGIT" }] }),
   component: DashboardPage,
 });

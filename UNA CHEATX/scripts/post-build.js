@@ -104,9 +104,9 @@ try {
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="UNA CHEATX - React + Vite Application"
+      content="OG REDEGIT - Premium Panel"
     />
-    <title>UNA CHEATX</title>
+    <title>OG REDEGIT</title>
     ${cssFile ? `<link rel="stylesheet" href="${basePath}/assets/${cssFile}" />` : ''}
   </head>
   <body>

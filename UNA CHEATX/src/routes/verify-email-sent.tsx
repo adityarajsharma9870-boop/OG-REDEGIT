@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const Route = createFileRoute("/verify-email-sent")({
-  head: () => ({ meta: [{ title: "Verify Email Sent — UNA CHEATX" }] }),
+  head: () => ({ meta: [{ title: "Verify Email Sent — OG REDEGIT" }] }),
   component: VerifyEmailSentPage,
 });
 

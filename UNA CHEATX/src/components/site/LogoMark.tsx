@@ -9,7 +9,7 @@ export function LogoMark({ className = "h-9 w-9", src }: { className?: string; s
   }
 
   if (LOGO_SRC) {
-    return <img src={LOGO_SRC} alt="UNA CHEATX logo" width={512} height={512} className={`${className} object-contain`} />;
+    return <img src={LOGO_SRC} alt="OG REDEGIT logo" width={512} height={512} className={`${className} object-contain`} />;
   }
   return (
     <div className={`${className} grid place-items-center rounded-xl font-display text-lg font-extrabold text-white`} style={{ background: "var(--gradient-violet)", boxShadow: "var(--glow-violet)" }}>

@@ -88,7 +88,7 @@ export const sendVerificationEmail = async (email, verificationLink) => {
                 <h1>Email Verification</h1>
             </div>
             <div class="content">
-                <h2>Welcome to UNA CHEATX!</h2>
+                <h2>Welcome to OG REDEGIT!</h2>
                 <p>Thank you for signing up. Please verify your email address to complete your registration.</p>
                 
                 <div style="text-align: center;">
@@ -107,7 +107,7 @@ export const sendVerificationEmail = async (email, verificationLink) => {
                 <p style="color: #999; font-size: 13px;">If you didn't create this account, please ignore this email.</p>
             </div>
             <div class="footer">
-                <p>&copy; 2024 UNA CHEATX. All rights reserved.</p>
+                <p>&copy; 2024 OG REDEGIT. All rights reserved.</p>
                 <p>This is an automated message, please do not reply to this email.</p>
             </div>
         </div>
@@ -119,7 +119,7 @@ export const sendVerificationEmail = async (email, verificationLink) => {
     await transporter.sendMail({
       from: config.email.from,
       to: email,
-      subject: 'Verify Your Email - UNA CHEATX',
+      subject: 'Verify Your Email - OG REDEGIT',
       html: htmlTemplate,
     });
     return true;
@@ -222,7 +222,7 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
                 <p style="color: #999; font-size: 13px;">If you didn't request a password reset, please ignore this email or contact support if you have concerns.</p>
             </div>
             <div class="footer">
-                <p>&copy; 2024 UNA CHEATX. All rights reserved.</p>
+                <p>&copy; 2024 OG REDEGIT. All rights reserved.</p>
                 <p>This is an automated message, please do not reply to this email.</p>
             </div>
         </div>
@@ -234,7 +234,7 @@ export const sendPasswordResetEmail = async (email, resetLink) => {
     await transporter.sendMail({
       from: config.email.from,
       to: email,
-      subject: 'Password Reset - UNA CHEATX',
+      subject: 'Password Reset - OG REDEGIT',
       html: htmlTemplate,
     });
     return true;
@@ -303,12 +303,12 @@ export const sendWelcomeEmail = async (email, name) => {
     <body>
         <div class="container">
             <div class="header">
-                <h1>Welcome to UNA CHEATX!</h1>
+                <h1>Welcome to OG REDEGIT!</h1>
             </div>
             <div class="content">
                 <h2>Hello ${name}!</h2>
                 <p>Your email has been verified and your account is now fully activated.</p>
-                <p>You can now log in and start using all features of UNA CHEATX.</p>
+                <p>You can now log in and start using all features of OG REDEGIT.</p>
                 
                 <div style="text-align: center;">
                     <a href="${config.server.frontendUrl}/dashboard" class="button">Go to Dashboard</a>
@@ -319,7 +319,7 @@ export const sendWelcomeEmail = async (email, name) => {
                 </p>
             </div>
             <div class="footer">
-                <p>&copy; 2024 UNA CHEATX. All rights reserved.</p>
+                <p>&copy; 2024 OG REDEGIT. All rights reserved.</p>
             </div>
         </div>
     </body>
@@ -330,7 +330,7 @@ export const sendWelcomeEmail = async (email, name) => {
     await transporter.sendMail({
       from: config.email.from,
       to: email,
-      subject: 'Welcome to UNA CHEATX!',
+      subject: 'Welcome to OG REDEGIT!',
       html: htmlTemplate,
     });
     return true;
