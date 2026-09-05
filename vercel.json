@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd \"UNA CHEATX\" && npm install && npm run build",
+  "outputDirectory": "UNA CHEATX/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

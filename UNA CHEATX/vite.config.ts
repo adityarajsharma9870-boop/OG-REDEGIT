@@ -6,7 +6,9 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const isVercel = process.env.VERCEL === "1";
+
 export default defineConfig({
-  base: "/OG-REDEGIT/",
+  base: isVercel ? "/" : "/OG-REDEGIT/",
   ssr: false,
 });

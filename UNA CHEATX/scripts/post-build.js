@@ -41,7 +41,7 @@ try {
       const manifestFile = serverFiles.find(f => f.startsWith('_tanstack-start-manifest'));
       if (manifestFile) {
         const manifestContent = fs.readFileSync(path.join(serverAssetsPath, manifestFile), 'utf8');
-        const match = manifestContent.match(/__root__[\s\S]*?src:\s*"\/OG-REDEGIT\/assets\/(index-[^"]+\.js)"/);
+        const match = manifestContent.match(/__root__[\s\S]*?src:\s*"(?:\/OG-REDEGIT)?\/assets\/(index-[^"]+\.js)"/);
         if (match && match[1]) {
           mainJsFile = match[1];
           console.log(`✓ Detected main entry script from manifest: ${mainJsFile}`);
@@ -92,6 +92,9 @@ try {
     console.log(`✓ Main JS entry: ${mainJsFile}`);
     console.log(`✓ CSS file: ${cssFile}`);
 
+    const isVercel = process.env.VERCEL === "1";
+    const basePath = isVercel ? "" : "/OG-REDEGIT";
+
     if (mainJsFile) {
       const indexHtml = `<!doctype html>
 <html lang="en">
@@ -104,12 +107,12 @@ try {
       content="UNA CHEATX - React + Vite Application"
     />
     <title>UNA CHEATX</title>
-    ${cssFile ? `<link rel="stylesheet" href="/OG-REDEGIT/assets/${cssFile}" />` : ''}
+    ${cssFile ? `<link rel="stylesheet" href="${basePath}/assets/${cssFile}" />` : ''}
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script type="module" src="/OG-REDEGIT/assets/${mainJsFile}"></script>
+    <script type="module" src="${basePath}/assets/${mainJsFile}"></script>
   </body>
 </html>
 `;
