@@ -18,10 +18,7 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const hasAdmin =
-      isAdmin ||
-      (typeof window !== "undefined" && Boolean(localStorage.getItem("fake_admin_session")));
-    if (hasAdmin) {
+    if (isAdmin) {
       navigate({ to: "/admin" });
     }
   }, [isAdmin, navigate]);
@@ -74,7 +71,7 @@ function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-grid px-4">
-      <div className="glass w-full max-w-md rounded-3xl p-8 animate-float-up" style={{ boxShadow: "var(--shadow-card)" }}>
+      <div className="glass w-full max-w-md rounded-3xl p-8" style={{ boxShadow: "var(--shadow-card)" }}>
         <div className="flex flex-col items-center text-center">
           <LogoMark className="h-14 w-14" />
           <h1 className="mt-4 font-heading text-2xl font-bold">OG REDEGIT Owner Login</h1>
@@ -90,7 +87,7 @@ function LoginPage() {
             placeholder="Email or Username (optional)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
+            className="w-full rounded-xl border border-input bg-secondary/80 px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
           <input
             type="password"
@@ -101,7 +98,7 @@ function LoginPage() {
             placeholder="Owner Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-input bg-secondary/50 px-4 py-3 text-sm text-foreground outline-none transition-colors duration-150 focus:border-primary focus:ring-2 focus:ring-ring cursor-text"
+            className="w-full rounded-xl border border-input bg-secondary/80 px-4 py-3 text-sm text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
           <button
             type="submit"
