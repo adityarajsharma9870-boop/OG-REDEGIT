@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Shield, Zap, Check, ChevronRight, MessageCircle, Users, ShoppingCart, Cpu, Lock } from "lucide-react";
+import { Shield, Zap, Check, ChevronRight, MessageCircle, Users, ShoppingCart, Cpu, Lock, Headphones, Sparkles, Coins, CreditCard } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { LogoMark } from "@/components/site/LogoMark";
 import BackgroundSpots from "@/components/site/BackgroundSpots";
@@ -70,6 +70,24 @@ function Index() {
     event.currentTarget.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)";
     event.currentTarget.style.setProperty("--faq-glow-x", "50%");
     event.currentTarget.style.setProperty("--faq-glow-y", "50%");
+  };
+
+  const handleCtaPointerMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const rotateY = (x - 0.5) * 8;
+    const rotateX = (0.5 - y) * 8;
+
+    event.currentTarget.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px) scale(1.008)`;
+    event.currentTarget.style.setProperty("--cta-glow-x", `${x * 100}%`);
+    event.currentTarget.style.setProperty("--cta-glow-y", `${y * 100}%`);
+  };
+
+  const handleCtaPointerLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.currentTarget.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)";
+    event.currentTarget.style.setProperty("--cta-glow-x", "50%");
+    event.currentTarget.style.setProperty("--cta-glow-y", "50%");
   };
 
   useEffect(() => {
@@ -254,21 +272,163 @@ function Index() {
       </section>
 
       {/* CTA */}
-      <section id="cta" className="mx-auto max-w-5xl px-4 py-20 text-center">
-        <div className="glass rounded-3xl px-6 py-16" style={{ boxShadow: "var(--shadow-card)" }}>
-          <p className="font-heading text-xs tracking-[0.35em] text-grass">READY TO DOMINATE?</p>
-          <h2 className="mt-3 font-heading text-4xl font-bold sm:text-6xl">FOR ANY QUERY<span className="text-gradient"></span> DM US.</h2>
-          <p className="mt-4 text-muted-foreground">UPI · Binance · Bkash supported. Custom packages, seller credits & bulk deals available.</p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <a href="#panels" className="btn-animated inline-flex items-center gap-2 rounded-xl px-7 py-3 font-heading text-sm font-bold text-white" style={{ background: "var(--gradient-brand)", boxShadow: "var(--glow-violet)" }}>
-              <ShoppingCart className="h-4 w-4" /> BUY NOW
+      <section id="cta" className="relative mx-auto max-w-5xl px-4 py-24 text-center">
+        {/* Ambient atmospheric glow behind card */}
+        <div
+          className="pointer-events-none absolute inset-x-8 top-12 bottom-12 rounded-[40px] opacity-70 blur-3xl animate-pulse-glow"
+          style={{
+            background: "radial-gradient(ellipse at 50% 50%, rgba(236,72,153,0.28) 0%, rgba(168,85,247,0.28) 35%, rgba(6,182,212,0.2) 70%, transparent 95%)",
+          }}
+        />
+
+        <div
+          className="cta-card relative overflow-hidden rounded-3xl px-6 py-14 sm:px-12 sm:py-16 text-center"
+          onMouseMove={handleCtaPointerMove}
+          onMouseLeave={handleCtaPointerLeave}
+        >
+          {/* Cyber HUD Corner Accents */}
+          <div className="pointer-events-none absolute top-4 left-4 h-5 w-5 border-l-2 border-t-2 border-cyan/70 rounded-tl" />
+          <div className="pointer-events-none absolute top-4 right-4 h-5 w-5 border-r-2 border-t-2 border-magenta/70 rounded-tr" />
+          <div className="pointer-events-none absolute bottom-4 left-4 h-5 w-5 border-l-2 border-b-2 border-magenta/70 rounded-bl" />
+          <div className="pointer-events-none absolute bottom-4 right-4 h-5 w-5 border-r-2 border-b-2 border-cyan/70 rounded-br" />
+
+          {/* Top Pill / Status Badge */}
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-grass/30 bg-grass/10 px-4 py-1.5 backdrop-blur-md shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-grass opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-grass"></span>
+            </span>
+            <span className="font-heading text-xs font-bold tracking-[0.3em] text-grass uppercase">
+              READY TO DOMINATE?
+            </span>
+            <span className="text-white/20">|</span>
+            <span className="flex items-center gap-1 font-heading text-[11px] tracking-wider text-cyan">
+              <Zap className="h-3 w-3" /> 24/7 INSTANT SUPPORT
+            </span>
+          </div>
+
+          {/* Main Title */}
+          <h2 className="mt-5 font-heading text-4xl sm:text-6xl font-extrabold uppercase tracking-tight leading-tight">
+            FOR ANY QUERY{" "}
+            <span className="text-gradient drop-shadow-[0_0_35px_rgba(236,72,153,0.5)]">
+              DM US.
+            </span>
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+            UPI · Binance · Bkash supported. Custom packages, seller credits &amp; bulk wholesale deals available directly on Discord.
+          </p>
+
+          {/* 4 Feature / Trust Cards */}
+          <div className="mx-auto mt-8 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4 text-left">
+            <div className="perk-chip rounded-xl border border-white/10 bg-white/[0.03] p-3.5 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-cyan/15 text-cyan border border-cyan/30">
+                  <Zap className="h-3.5 w-3.5" />
+                </div>
+                <span className="font-heading text-xs font-bold tracking-wider text-foreground">INSTANT KEY</span>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground leading-snug">Automated delivery dispatched within 2 mins of payment.</p>
+            </div>
+
+            <div className="perk-chip rounded-xl border border-white/10 bg-white/[0.03] p-3.5 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-grass/15 text-grass border border-grass/30">
+                  <Shield className="h-3.5 w-3.5" />
+                </div>
+                <span className="font-heading text-xs font-bold tracking-wider text-foreground">UNDETECTED</span>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground leading-snug">Stream-proof &amp; tournament approved kernel bypass.</p>
+            </div>
+
+            <div className="perk-chip rounded-xl border border-white/10 bg-white/[0.03] p-3.5 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-violet/20 text-violet border border-violet/40">
+                  <Headphones className="h-3.5 w-3.5" />
+                </div>
+                <span className="font-heading text-xs font-bold tracking-wider text-foreground">1-ON-1 HELP</span>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground leading-snug">Direct screen-share &amp; discord ticket assistance.</p>
+            </div>
+
+            <div className="perk-chip rounded-xl border border-white/10 bg-white/[0.03] p-3.5 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="grid h-7 w-7 place-items-center rounded-lg bg-magenta/15 text-magenta border border-magenta/30">
+                  <Sparkles className="h-3.5 w-3.5" />
+                </div>
+                <span className="font-heading text-xs font-bold tracking-wider text-foreground">BULK DEALS</span>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground leading-snug">Special discounts for resellers &amp; team packages.</p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="#panels"
+              className="btn-animated group inline-flex items-center gap-2.5 rounded-xl px-8 py-3.5 font-heading text-sm font-bold tracking-wider text-white shadow-[0_0_35px_-4px_rgba(236,72,153,0.65)]"
+              style={{ background: "var(--gradient-brand)" }}
+            >
+              <ShoppingCart className="h-4 w-4 transition-transform group-hover:scale-110" />
+              BUY NOW
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
-            <a href="https://discord.gg/NheAdhyT" target="_blank" rel="noreferrer" className="btn-outline-animated inline-flex items-center gap-2 rounded-xl border border-border px-7 py-3 font-heading text-sm font-bold glass">
-              <MessageCircle className="h-4 w-4" /> CONTACT US ON DISCORD
+
+            <a
+              href="https://discord.gg/NheAdhyT"
+              target="_blank"
+              rel="noreferrer"
+              className="btn-animated group inline-flex items-center gap-2.5 rounded-xl border border-[#5865F2]/60 bg-[#5865F2]/20 hover:bg-[#5865F2]/35 px-8 py-3.5 font-heading text-sm font-bold tracking-wider text-white shadow-[0_0_30px_-6px_rgba(88,101,242,0.5)] transition-all"
+            >
+              <svg className="h-4 w-4 fill-current text-[#7983F5] group-hover:text-white transition-colors" viewBox="0 0 127.14 96.36">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,45.91,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,45.91,96.12,53,91.08,65.69,84.69,65.69Z" />
+              </svg>
+              CONTACT US ON DISCORD
+              <span className="relative ml-0.5 flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-grass opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-grass"></span>
+              </span>
             </a>
           </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-6 font-heading text-[11px] tracking-[0.25em] text-muted-foreground">
-            <span>UPI (IN)</span><span>BINANCE</span><span>BKASH (BD)</span>
+
+          {/* Payment Gateways Bar */}
+          <div className="mt-11 border-t border-white/10 pt-7">
+            <p className="flex items-center justify-center gap-2 font-heading text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
+              <Lock className="h-3 w-3 text-cyan" /> SUPPORTED PAYMENT METHODS · INSTANT VERIFICATION
+            </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
+              <div className="payment-badge flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2">
+                <span className="text-base">🇮🇳</span>
+                <div className="text-left">
+                  <p className="font-heading text-xs font-bold text-emerald-400">UPI (IN)</p>
+                  <p className="text-[10px] text-muted-foreground">GPay · PhonePe · Paytm · QR</p>
+                </div>
+              </div>
+
+              <div className="payment-badge flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2">
+                <Coins className="h-4 w-4 text-amber-400" />
+                <div className="text-left">
+                  <p className="font-heading text-xs font-bold text-amber-400">BINANCE</p>
+                  <p className="text-[10px] text-muted-foreground">USDT · BTC · Crypto (0% Fee)</p>
+                </div>
+              </div>
+
+              <div className="payment-badge flex items-center gap-2 rounded-xl border border-pink-500/30 bg-pink-500/10 px-3.5 py-2">
+                <span className="text-base">🇧🇩</span>
+                <div className="text-left">
+                  <p className="font-heading text-xs font-bold text-pink-400">BKASH (BD)</p>
+                  <p className="text-[10px] text-muted-foreground">bKash · Nagad (BDT Direct)</p>
+                </div>
+              </div>
+
+              <div className="payment-badge flex items-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-2">
+                <CreditCard className="h-4 w-4 text-cyan" />
+                <div className="text-left">
+                  <p className="font-heading text-xs font-bold text-cyan">GLOBAL / CARDS</p>
+                  <p className="text-[10px] text-muted-foreground">PayPal &amp; Cards via Ticket</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
